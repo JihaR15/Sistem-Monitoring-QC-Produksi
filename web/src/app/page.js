@@ -7,6 +7,12 @@ export default function Home() {
   const [master, setMaster] = useState({ groups: [], shifts: [], lines: [] });
   const [chartData, setChartData] = useState([]);
   
+  const [filters, setFilters] = useState({
+    line: '',
+    shift: '',
+    status: ''
+  });
+
   const [form, setForm] = useState({
     group: '', shift: '', line: '', suhu: '', berat: '', kualitas: 'OK'
   });
@@ -16,7 +22,25 @@ export default function Home() {
   useEffect(() => {
     fetchMaster();
     fetchData();
+
+    const intervalId = setInterval(() => {
+        fetchData();
+    }, 3000);
+
+    return () => clearInterval(intervalId);
   }, []);
+
+  const getFilteredData = () => {
+    return chartData.filter(item => {
+        const matchLine = filters.line === '' || item.line === filters.line;
+        const matchShift = filters.shift === '' || item.shift.toString() === filters.shift; 
+        const matchStatus = filters.status === '' || item.kualitas === filters.status;
+        
+        return matchLine && matchShift && matchStatus;
+    });
+  };
+
+  const finalData = getFilteredData();
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -33,7 +57,7 @@ export default function Home() {
       setMaster({
         groups: ['SD', 'SMP', 'SMA', 'Mahasiswa'],
         shifts: [1, 2, 3],
-        lines: ['A', 'B', 'C', 'D', 'E']
+        lines: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M']
       });
     }
   };
@@ -126,43 +150,86 @@ export default function Home() {
 
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-0 lg:divide-x divide-neutral-200 dark:divide-neutral-800">
         
-        <section className="lg:col-span-2 p-6 flex flex-col justify-center bg-neutral-50 dark:bg-[#0a0a0a]">
-          <div className="flex justify-between items-end mb-6">
-            <h2 className="text-lg font-semibold opacity-70">Live Production Monitoring</h2>
-            <div className="text-xs flex gap-3">
-                <span className="flex items-center gap-1"><div className="w-3 h-3 bg-red-600 rounded-sm"></div> Reject</span>
-                <span className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-500 rounded-sm"></div> OK</span>
+        <section className="lg:col-span-2 p-6 flex flex-col bg-neutral-50 dark:bg-[#0a0a0a]">
+          
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <h2 className="text-lg font-semibold opacity-70">Live Monitoring</h2>
+            
+            <div className="flex gap-2">
+                <select 
+                    className="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded px-3 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    value={filters.line}
+                    onChange={(e) => setFilters({...filters, line: e.target.value})}
+                >
+                    <option value="">All Lines</option>
+                    {master.lines.map(l => <option key={l} value={l}>Line {l}</option>)}
+                </select>
+
+                <select 
+                    className="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded px-3 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    value={filters.shift}
+                    onChange={(e) => setFilters({...filters, shift: e.target.value})}
+                >
+                    <option value="">All Shifts</option>
+                    {master.shifts.map(s => <option key={s} value={s}>Shift {s}</option>)}
+                </select>
+
+                <select 
+                    className="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded px-3 py-1 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                    value={filters.status}
+                    onChange={(e) => setFilters({...filters, status: e.target.value})}
+                >
+                    <option value="">All Status</option>
+                    <option value="OK">✅ OK Only</option>
+                    <option value="NOT OK">❌ Reject Only</option>
+                </select>
+                
+                {(filters.line || filters.shift || filters.status) && (
+                    <button 
+                        onClick={() => setFilters({line:'', shift:'', status:''})}
+                        className="text-xs text-red-500 hover:text-red-700 font-bold px-2"
+                    >
+                        Reset
+                    </button>
+                )}
             </div>
           </div>
           
-          <div className="h-[450px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
-                <XAxis 
-                    dataKey="id" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{fill: '#888', fontSize: 12}}
-                    tickFormatter={(value) => {
-                        const item = chartData.find(d => d.id === value);
-                        return item ? item.line : value;
-                    }}
-                />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.1)'}} />
-                <Bar dataKey="suhu" name="Suhu (°C)" radius={[4, 4, 0, 0]} barSize={40}>
-                    { chartData.map((entry, index) => (
-                        <Cell key={`cell-s-${index}`} fill={entry.kualitas === 'NOT OK' ? '#dc2626' : '#3b82f6'} />
-                    ))}
-                </Bar>
-                <Bar dataKey="berat" name="Berat (kg)" radius={[4, 4, 0, 0]} barSize={40}>
-                    { chartData.map((entry, index) => (
-                        <Cell key={`cell-b-${index}`} fill={entry.kualitas === 'NOT OK' ? '#b91c1c' : '#10b981'} />
-                    ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="h-[450px] w-full relative">
+            {finalData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={finalData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.1} />
+                    <XAxis 
+                        dataKey="id" 
+                        axisLine={false} 
+                        tickLine={false} 
+                        tick={{fill: '#888', fontSize: 12}}
+                        tickFormatter={(value) => {
+                            const item = finalData.find(d => d.id === value);
+                            return item ? item.line : value;
+                        }}
+                    />
+                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
+                    <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.1)'}} />
+                    <Bar dataKey="suhu" name="Suhu (°C)" radius={[4, 4, 0, 0]} barSize={40}>
+                        { finalData.map((entry, index) => (
+                            <Cell key={`cell-s-${index}`} fill={entry.kualitas === 'NOT OK' ? '#dc2626' : '#3b82f6'} />
+                        ))}
+                    </Bar>
+                    <Bar dataKey="berat" name="Berat (kg)" radius={[4, 4, 0, 0]} barSize={40}>
+                        { finalData.map((entry, index) => (
+                            <Cell key={`cell-b-${index}`} fill={entry.kualitas === 'NOT OK' ? '#b91c1c' : '#10b981'} />
+                        ))}
+                    </Bar>
+                </BarChart>
+                </ResponsiveContainer>
+            ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-400">
+                    <div className="text-4xl mb-2">🔍</div>
+                    <p>No data found matching filters</p>
+                </div>
+            )}
           </div>
         </section>
 
@@ -196,7 +263,7 @@ export default function Home() {
                     value={form.line} 
                     onChange={v => setForm({...form, line: v})} 
                     options={master.lines} 
-                    placeholder="Select Line (A-E)" 
+                    placeholder="Select Line (A-M)" 
                     required={true}
                 />
             </div>

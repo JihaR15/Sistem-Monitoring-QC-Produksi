@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "date": "2025-12-16",
+    "group": "Mahasiswa",
+    "shift": 3,
+    "line": "A",
+    "suhu": 12,
+    "berat": 14,
+    "kualitas": "OK"
+  },
+  {
+    "id": 2,
+    "date": "2025-12-16",
+    "group": "SMA",
+    "shift": 2,
+    "line": "B",
+    "suhu": 13,
+    "berat": 15,
+    "kualitas": "OK"
+  },
+  {
+    "id": 3,
+    "date": "2025-12-16",
+    "group": "Mahasiswa",
+    "shift": 2,
+    "line": "C",
+    "suhu": 14,
+    "berat": 16.45,
+    "kualitas": "OK"
+  },
+  {
+    "id": 4,
+    "date": "2025-12-16",
+    "group": "Mahasiswa",
+    "shift": 3,
+    "line": "D",
+    "suhu": 13,
+    "berat": 14.8,
+    "kualitas": "NOT OK"
+  },
+  {
+    "id": 5,
+    "date": "2025-12-16",
+    "group": "Mahasiswa",
+    "shift": 2,
+    "line": "C",
+    "suhu": 15,
+    "berat": 16.45,
+    "kualitas": "OK"
+  },
+  {
+    "id": 6,
+    "date": "2025-12-16",
+    "group": "Mahasiswa",
+    "shift": 2,
+    "line": "C",
+    "suhu": 16,
+    "berat": 16.45,
+    "kualitas": "NOT OK"
+  }
+]

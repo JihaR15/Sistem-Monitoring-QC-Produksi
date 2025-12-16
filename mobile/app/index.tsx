@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
-import { BarChart } from 'react-native-chart-kit';
+
+import { BarChart } from 'react-native-gifted-charts';
 
 interface OperationalData {
   id: number;
@@ -22,16 +23,8 @@ export default function App() {
   const [master, setMaster] = useState({ groups: [], shifts: [], lines: [] });
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  
-  type ChartDataType = {
-    labels: string[];
-    datasets: { data: number[] }[];
-  };
 
-  const [chartData, setChartData] = useState<ChartDataType>({
-    labels: [],
-    datasets: [{ data: [] }]
-  });
+  const [chartData, setChartData] = useState<any[]>([]);
 
   const [form, setForm] = useState({
     group: '', shift: '', line: '', suhu: '', berat: '', kualitas: 'OK'
@@ -58,7 +51,6 @@ export default function App() {
     }
   };
 
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await fetchAllData();
@@ -69,28 +61,23 @@ export default function App() {
     const recentData = data.slice(-5); 
     
     if (recentData.length > 0) {
-      const labels = recentData.map(item => item.line);
-      const values = recentData.map(item => item.suhu);
+      const formattedData = recentData.map(item => ({
+        value: item.suhu,
+        label: item.line,
+        frontColor: item.kualitas === 'OK' ? '#10b981' : '#ef4444',
+        topLabelComponent: () => (
+            <Text style={{color: 'gray', fontSize: 10, marginBottom: 2}}>{item.suhu}</Text>
+        )
+      }));
       
-      setChartData({
-        labels: labels,
-        datasets: [{ data: values }]
-      });
+      setChartData(formattedData);
     }
   };
 
   const handleOCR = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissionResult.granted === false) {
-      Alert.alert("Izin Ditolak", "Anda menolak akses kamera.");
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.6,
-      base64: true,
-    });
+    if (permissionResult.granted === false) { Alert.alert("Izin Ditolak", "Anda menolak akses kamera."); return; }
+    const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.6, base64: true });
 
     if (!result.canceled) {
       setLoading(true);
@@ -102,56 +89,38 @@ export default function App() {
         formData.append('isOverlayRequired', 'false');
         formData.append('scale', 'true'); 
         formData.append('OCREngine', '2'); 
-        
         const API_KEY = 'K81502281388957';
-
         const response = await axios.post('https://api.ocr.space/parse/image', formData, {
             headers: { 'apikey': API_KEY, 'Content-Type': 'multipart/form-data'}
         });
-
         const parsedResults = response.data.ParsedResults;
         if (parsedResults && parsedResults.length > 0) {
             const textDetected = parsedResults[0].ParsedText;
             const match = textDetected.match(/[0-9]+([.,][0-9]+)?/);
-
             if (match) {
                 const cleanNumber = match[0].replace(',', '.');
                 setForm(prev => ({ ...prev, berat: cleanNumber }));
                 Alert.alert("OCR Sukses", `Angka: ${cleanNumber}`);
-            } else {
-                Alert.alert("Gagal", "Tidak ada angka terdeteksi.");
-            }
+            } else { Alert.alert("Gagal", "Tidak ada angka terdeteksi."); }
         } 
-      } catch (error) {
-        Alert.alert("Error", "Gagal koneksi OCR.");
-      } finally {
-        setLoading(false);
-      }
+      } catch (error) { Alert.alert("Error", "Gagal koneksi OCR."); } 
+      finally { setLoading(false); }
     }
   };
 
   const handleSubmit = async () => {
-    if (!form.group || !form.shift || !form.line || !form.suhu || !form.berat) {
+     if (!form.group || !form.shift || !form.line || !form.suhu || !form.berat) {
       Alert.alert("Data Belum Lengkap", "Harap isi semua kolom!");
       return;
     }
-
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/data`, {
-        ...form,
-        suhu: parseInt(form.suhu),
-        berat: parseFloat(form.berat)
-      });
-
+      await axios.post(`${API_URL}/data`, { ...form, suhu: parseInt(form.suhu), berat: parseFloat(form.berat) });
       Alert.alert("Sukses", "Data terkirim!");
       setForm(prev => ({ ...prev, suhu: '', berat: '' })); 
       fetchAllData();
-    } catch (err) {
-      Alert.alert("Gagal", "Error kirim data.");
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { Alert.alert("Gagal", "Error kirim data."); } 
+    finally { setLoading(false); }
   };
 
   const openPicker = (type: string) => {
@@ -176,25 +145,39 @@ export default function App() {
         
         <Text style={styles.headerTitle}>Mobile Dashboard</Text>
 
+        {/* --- 4. TAMPILAN CHART BARU --- */}
         <View style={styles.chartContainer}>
             <Text style={styles.chartTitle}>Monitoring Suhu (5 Data Terakhir)</Text>
-            {chartData.labels.length > 0 ? (
-                <BarChart
-                    data={chartData}
-                    width={screenWidth - 40}
-                    height={220}
-                    yAxisLabel=""
-                    yAxisSuffix="°C"
-                    chartConfig={{
-                        backgroundColor: "#fff",
-                        backgroundGradientFrom: "#fff",
-                        backgroundGradientTo: "#fff",
-                        decimalPlaces: 0,
-                        color: (opacity = 1) => `rgba(37, 99, 235, ${opacity})`,
-                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                    }}
-                    style={{ borderRadius: 16 }}
-                />
+            {chartData.length > 0 ? (
+                <View style={{ alignItems: 'center', width: '100%' }}>
+                    {/* Render Library Baru */}
+                    <BarChart
+                        data={chartData}
+                        barWidth={30}
+                        noOfSections={4}
+                        barBorderRadius={4}
+                        frontColor="#10b981"
+                        yAxisThickness={0}
+                        xAxisThickness={0}
+                        yAxisTextStyle={{color: '#999'}}
+                        xAxisLabelTextStyle={{color: '#555'}}
+                        width={screenWidth - 80}
+                        height={200}
+                        spacing={30}
+                        isAnimated
+                    />
+                     {/* Keterangan Warna */}
+                     <View style={{flexDirection:'row', gap:15, marginTop:10}}>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                            <View style={{width:10, height:10, backgroundColor:'#10b981', borderRadius:2}}/>
+                            <Text style={{fontSize:10, color:'#555'}}>OK</Text>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
+                            <View style={{width:10, height:10, backgroundColor:'#ef4444', borderRadius:2}}/>
+                            <Text style={{fontSize:10, color:'#555'}}>NOT OK</Text>
+                        </View>
+                     </View>
+                </View>
             ) : (
                 <Text style={{textAlign:'center', color:'#999', marginVertical: 20}}>Belum ada data</Text>
             )}
@@ -203,6 +186,7 @@ export default function App() {
         <Text style={styles.subHeader}>Input Data Operasional</Text>
 
         <View style={styles.card}>
+          {/* ... (BAGIAN FORM INPUT SAMA PERSIS, TIDAK DIUBAH) ... */}
           <View style={styles.row}>
             <TouchableOpacity style={[styles.input, styles.halfInput]} onPress={() => openPicker('group')}>
               <Text style={styles.label}>Group</Text>
@@ -304,8 +288,8 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#111', marginBottom: 15, textAlign: 'center' },
   subHeader: { fontSize: 16, color: '#666', marginTop: 20, marginBottom: 10, fontWeight:'bold' },
 
-  chartContainer: { backgroundColor: '#fff', padding: 10, borderRadius: 15, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 5, elevation: 3 },
-  chartTitle: { fontSize: 14, fontWeight: '600', marginBottom: 10, color: '#444' },
+  chartContainer: { backgroundColor: '#fff', padding: 20, borderRadius: 15, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 5, elevation: 3 },
+  chartTitle: { fontSize: 14, fontWeight: '600', marginBottom: 20, color: '#444' },
 
   card: { backgroundColor: '#fff', borderRadius: 15, padding: 20, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 },
   
