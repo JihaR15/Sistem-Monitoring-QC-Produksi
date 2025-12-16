@@ -145,13 +145,12 @@ export default function App() {
         
         <Text style={styles.headerTitle}>Mobile Dashboard</Text>
 
-        {/* --- 4. TAMPILAN CHART BARU --- */}
         <View style={styles.chartContainer}>
             <Text style={styles.chartTitle}>Monitoring Suhu (5 Data Terakhir)</Text>
             {chartData.length > 0 ? (
                 <View style={{ alignItems: 'center', width: '100%' }}>
-                    {/* Render Library Baru */}
                     <BarChart
+                        key={JSON.stringify(chartData)} 
                         data={chartData}
                         barWidth={30}
                         noOfSections={4}
@@ -164,10 +163,12 @@ export default function App() {
                         width={screenWidth - 80}
                         height={200}
                         spacing={30}
+                        maxValue={Math.max(...chartData.map(d => d.value)) + 5} 
                         isAnimated
+                        animationDuration={500}
                     />
-                     {/* Keterangan Warna */}
-                     <View style={{flexDirection:'row', gap:15, marginTop:10}}>
+                    
+                    <View style={{flexDirection:'row', gap:15, marginTop:10}}>
                         <View style={{flexDirection:'row', alignItems:'center', gap:5}}>
                             <View style={{width:10, height:10, backgroundColor:'#10b981', borderRadius:2}}/>
                             <Text style={{fontSize:10, color:'#555'}}>OK</Text>
@@ -176,7 +177,7 @@ export default function App() {
                             <View style={{width:10, height:10, backgroundColor:'#ef4444', borderRadius:2}}/>
                             <Text style={{fontSize:10, color:'#555'}}>NOT OK</Text>
                         </View>
-                     </View>
+                    </View>
                 </View>
             ) : (
                 <Text style={{textAlign:'center', color:'#999', marginVertical: 20}}>Belum ada data</Text>
@@ -186,7 +187,6 @@ export default function App() {
         <Text style={styles.subHeader}>Input Data Operasional</Text>
 
         <View style={styles.card}>
-          {/* ... (BAGIAN FORM INPUT SAMA PERSIS, TIDAK DIUBAH) ... */}
           <View style={styles.row}>
             <TouchableOpacity style={[styles.input, styles.halfInput]} onPress={() => openPicker('group')}>
               <Text style={styles.label}>Group</Text>
