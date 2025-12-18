@@ -1,11 +1,11 @@
 # Sistem Monitoring QC Produksi
 Tampilan Web: <br> 
-![alt text](web.png)<br>
+![alt text](webv2.png)<br>
 Tampilan Mobile: <br> 
-![alt text](mobile.jpeg)
+![alt text](mobilev2.jpeg)
 ## Tech Stack
-* **Backend:** Node.js, Express.js, Body-Parser, CORS, FS (File System).
-* **Frontend Web:** Next.js (React), Tailwind CSS, Recharts, Axios.
+* **Backend:** Node.js, Express.js, CORS, FS (File System).
+* **Frontend Web:** Next.js (React), Tailwind CSS, Recharts.
 * **Mobile:** React Native (Expo Framework), Expo Image Picker, React Native Gifted Charts.
 
 ## Prasyarat
