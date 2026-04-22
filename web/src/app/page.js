@@ -26,6 +26,8 @@ const STANDARDS = {
     maxBerat: 18.5
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function Home() {
   const [master, setMaster] = useState({ groups: [], shifts: [], lines: [] });
   const [chartData, setChartData] = useState([]);
@@ -132,7 +134,7 @@ export default function Home() {
 
   const fetchMaster = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/master');
+      const res = await fetch(`${API_URL}/api/master`);
       const data = await res.json();
       setMaster(data);
     } catch (err) { }
@@ -140,7 +142,7 @@ export default function Home() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/data');
+      const res = await fetch(`${API_URL}/api/data`);
       const data = await res.json();
       setChartData(data);
     } catch (err) { console.error("Error fetching data"); }
@@ -160,7 +162,7 @@ export default function Home() {
   const handleFinalSubmit = async () => {
     setShowConfirm(false); 
     try {
-      await fetch('http://localhost:5000/api/data', {
+      await fetch(`${API_URL}/api/data`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form)
       });
       showToast("Data Berhasil Disimpan!", "success");
