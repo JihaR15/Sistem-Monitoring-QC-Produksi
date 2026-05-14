@@ -5,12 +5,13 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
 import { Icons } from '@/components/Icons';
-import { STANDARDS, API_URL } from '@/constants/config';
+import { STANDARDS } from '@/constants/config';
 import { StatCard, SelectFilter, SelectSimple } from '@/components/UIComponents';
+import { useApi } from "@/hooks/useApi";
 
 export default function Home() {
-  const [master, setMaster] = useState({ groups: [], shifts: [], lines: [] });
-  const [chartData, setChartData] = useState([]);
+  const { master, chartData, loading, error, fetchData, postData } = useApi();
+
   const [showGuide, setShowGuide] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [filters, setFilters] = useState({ startDate: '', endDate: '', line: '', shift: '', status: '' });
@@ -40,13 +41,6 @@ export default function Home() {
     return () => {
       window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', checkTheme);
     };
-  }, []);
-
-  useEffect(() => {
-    fetchMaster();
-    fetchData();
-    const intervalId = setInterval(() => fetchData(), 3000);
-    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -112,22 +106,6 @@ export default function Home() {
     setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
   };
 
-  const fetchMaster = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/master`);
-      const data = await res.json();
-      setMaster(data);
-    } catch (err) { }
-  };
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/data`);
-      const data = await res.json();
-      setChartData(data);
-    } catch (err) { console.error("Error fetching data"); }
-  };
-
   const handlePreSubmit = (e) => {
     e.preventDefault();
     if (!form.group || !form.shift || !form.line || !form.suhu || !form.berat) {
@@ -141,14 +119,13 @@ export default function Home() {
 
   const handleFinalSubmit = async () => {
     setShowConfirm(false); 
-    try {
-      await fetch(`${API_URL}/api/data`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form)
-      });
+    const { success } = await postData(form);
+    if (success) {
       showToast("Data Berhasil Disimpan!", "success");
-      fetchData(); 
       setForm({...form, suhu: '', berat: ''}); 
-    } catch (err) { showToast("Gagal menyimpan data", "error"); }
+    } else {
+      showToast("Gagal menyimpan data", "error");
+    }
   };
 
   const SortIcon = ({ colKey }) => {
