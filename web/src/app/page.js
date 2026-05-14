@@ -4,29 +4,9 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
-
-const Icons = {
-  Help: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>,
-  Box: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
-  CheckCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
-  AlertTriangle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-  Activity: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
-  Close: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  Filter: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
-  Chart: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
-  Wave: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>,
-  SortUp: () => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg>,
-  SortDown: () => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-};
-
-const STANDARDS = {
-    minSuhu: 12,
-    maxSuhu: 20,
-    minBerat: 12.5,
-    maxBerat: 18.5
-};
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { Icons } from '@/components/Icons';
+import { STANDARDS, API_URL } from '@/constants/config';
+import { StatCard, SelectFilter, SelectSimple } from '@/components/UIComponents';
 
 export default function Home() {
   const [master, setMaster] = useState({ groups: [], shifts: [], lines: [] });
@@ -539,37 +519,3 @@ export default function Home() {
   );
 }
 
-const StatCard = ({ title, value, color="text-neutral-900 dark:text-white", icon }) => (
-    <div className="bg-white dark:bg-neutral-900 p-5 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-sm flex items-center gap-4 hover:border-blue-300 transition-colors group">
-        <div className="text-3xl bg-neutral-50 dark:bg-neutral-800 w-12 h-12 flex items-center justify-center rounded-full group-hover:scale-110 transition-transform">{icon}</div>
-        <div>
-            <h4 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1">{title}</h4>
-            <div className={`text-2xl font-black ${color}`}>{value}</div>
-        </div>
-    </div>
-);
-
-const SelectFilter = ({ value, onChange, options, placeholder, label }) => (
-    <div className="w-full md:w-auto">
-        <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1 block">{label}</label>
-        <div className="relative">
-            <select className="appearance-none w-full p-2.5 pr-8 text-sm border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-800 outline-none focus:border-blue-500 cursor-pointer dark:text-white"
-                value={value} onChange={e => onChange(e.target.value)}>
-                <option value="">{placeholder}</option>
-                {options.map(o => <option key={o} value={o} className="dark:bg-neutral-800">{o}</option>)}
-            </select>
-            <div className="absolute right-2 top-3 text-neutral-400 pointer-events-none transform scale-75">▼</div>
-        </div>
-    </div>
-);
-
-const SelectSimple = ({ value, onChange, options, placeholder }) => (
-    <div className="relative">
-        <select className="appearance-none w-full p-2.5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg text-sm outline-none focus:border-blue-500 transition-colors dark:text-white"
-            value={value} onChange={e => onChange(e.target.value)} required>
-            <option value="">- {placeholder} -</option>
-            {options.map(o => <option key={o} value={o}>{o}</option>)}
-        </select>
-        <div className="absolute right-3 top-3 text-neutral-400 pointer-events-none transform scale-75">▼</div>
-    </div>
-);
