@@ -2,7 +2,7 @@ import { SelectFilter } from '@/components/UIComponents';
 
 export const FilterSection = ({ filters, setFilters, lines, shifts }) => {
   return (
-    <section className="bg-white dark:bg-neutral-900 p-5 rounded-xl shadow-sm border border-neutral-100 dark:border-neutral-800 flex flex-col md:flex-row gap-4 items-end">
+    <section className="bg-white dark:bg-neutral-900 p-5 rounded-xl shadow-md border border-neutral-100 dark:border-neutral-800 flex flex-col md:flex-row gap-4 items-end">
       <div className="flex flex-wrap gap-4 w-full">
         <div>
           <label className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1 block">Start Date</label>

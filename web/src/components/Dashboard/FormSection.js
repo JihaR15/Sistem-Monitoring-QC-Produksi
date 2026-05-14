@@ -3,7 +3,7 @@ import { SelectSimple } from '@/components/UIComponents';
 
 export const FormSection = ({ form, setForm, handlePreSubmit, master }) => {
   return (
-    <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-sm flex flex-col justify-between">
+    <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-md flex flex-col justify-between transition-all hover:shadow-lg">
         <div>
             <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-4">Input Manual</h3>
             <form onSubmit={handlePreSubmit} className="space-y-4">

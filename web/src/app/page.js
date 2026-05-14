@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Icons } from '@/components/Icons';
 import { STANDARDS } from '@/constants/config';
 import { useApi } from "@/hooks/useApi";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Dashboard Components
 import { FilterSection } from '@/components/Dashboard/FilterSection';
@@ -30,21 +31,6 @@ export default function Home() {
   });
 
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-
-  useEffect(() => {
-    const checkTheme = () => {
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    };
-    checkTheme();
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', checkTheme);
-    return () => {
-      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', checkTheme);
-    };
-  }, []);
 
   useEffect(() => {
     if (form.suhu && form.berat) {
@@ -141,7 +127,7 @@ export default function Home() {
             </div>
         </div>
 
-        <header className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
+        <header className="sticky top-4 mx-6 z-40 flex justify-between items-center p-4 rounded-2xl bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl border border-white/20 dark:border-neutral-800/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
             <div>
                 <h1 className="text-xl font-bold flex items-center gap-2">
                     <Icons.Factory />Production <span className="text-blue-600">Dashboard</span>
@@ -150,13 +136,14 @@ export default function Home() {
             </div>
             
             <div className="flex items-center gap-3">
+                <ThemeToggle />
                 <button onClick={() => setShowGuide(true)} className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 transition-colors" title="Bantuan">
                     <Icons.Help />
                 </button>
             </div>
         </header>
 
-        <main className="p-6 w-full mx-auto space-y-6">
+        <main className="p-6 pt-10 w-full mx-auto space-y-6">
             <FilterSection filters={filters} setFilters={setFilters} lines={master.lines} shifts={master.shifts} />
             <StatSection totalProduksi={totalProduksi} totalOK={totalOK} totalReject={totalReject} rejectRate={rejectRate} />
             <ChartSection pieData={pieData} chartDataDisplay={chartDataDisplay} chartType={chartType} setChartType={setChartType} />

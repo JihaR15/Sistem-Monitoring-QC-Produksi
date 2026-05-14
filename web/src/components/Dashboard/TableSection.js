@@ -7,7 +7,7 @@ export const TableSection = ({ paginatedData, finalDataLength, sortConfig, reque
   };
 
   return (
-    <div className="lg:col-span-2 bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 flex flex-col shadow-sm h-auto">
+    <div className="lg:col-span-2 bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 flex flex-col shadow-md h-auto transition-all hover:shadow-lg">
         <div className="flex justify-between items-center mb-4">
             <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Log Data Produksi</h3>
             <span className="text-xs text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded">Total: {finalDataLength}</span>

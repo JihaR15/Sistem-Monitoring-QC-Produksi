@@ -8,7 +8,7 @@ export const ChartSection = ({ pieData, chartDataDisplay, chartType, setChartTyp
   return (
     <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 flex flex-col items-center justify-between shadow-sm">
+      <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 flex flex-col items-center justify-between shadow-md">
           <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest w-full text-center mb-2">Rasio Kualitas</h3>
           
           <div className="h-[220px] w-full relative">
@@ -29,9 +29,9 @@ export const ChartSection = ({ pieData, chartDataDisplay, chartType, setChartTyp
                               const id = entry.name === 'OK' ? 'gradOK' : 'gradNotOK';
                               return <Cell key={`cell-${index}`} fill={`url(#${id})`} stroke="none" />;
                           })}
-                      </Pie>
-                      <Tooltip contentStyle={{backgroundColor: 'var(--tooltip-bg, #fff)', borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'}} />
-                  </PieChart>
+                       </Pie>
+                       <Tooltip contentStyle={{backgroundColor: 'var(--background, #fff)', color: 'var(--foreground, #000)', borderRadius: 8, border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'}} />
+                   </PieChart>
               </ResponsiveContainer>
           </div>
 
@@ -45,7 +45,7 @@ export const ChartSection = ({ pieData, chartDataDisplay, chartType, setChartTyp
           </div>
       </div>
 
-      <div className="lg:col-span-2 bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
+      <div className="lg:col-span-2 bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-md">
           <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-4">
                   <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Tren Pengukuran</h3>
@@ -82,20 +82,20 @@ export const ChartSection = ({ pieData, chartDataDisplay, chartType, setChartTyp
                               </linearGradient>
                           </defs>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                          <XAxis dataKey="line" tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
-                          <YAxis domain={['auto', 'auto']} tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
-                          <Tooltip contentStyle={{backgroundColor: '#fff', color: '#000', borderRadius:'8px', border:'none', boxShadow:'0 10px 15px -3px rgba(0, 0, 0, 0.1)'}} />
-                          
-                          <Area type="monotone" dataKey="suhu" stroke="#3b82f6" strokeWidth={3} fill="url(#gradSuhu)" dot={{r: 3, fill: '#3b82f6', strokeWidth:0}} activeDot={{r: 6}} isAnimationActive={true} />
+                           <XAxis dataKey="line" tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
+                           <YAxis domain={['auto', 'auto']} tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
+                           <Tooltip contentStyle={{backgroundColor: 'var(--background, #fff)', color: 'var(--foreground, #000)', borderRadius:'8px', border:'none', boxShadow:'0 10px 15px -3px rgba(0, 0, 0, 0.1)'}} />
+                           
+                           <Area type="monotone" dataKey="suhu" stroke="#3b82f6" strokeWidth={3} fill="url(#gradSuhu)" dot={{r: 3, fill: '#3b82f6', strokeWidth:0}} activeDot={{r: 6}} isAnimationActive={true} />
                           <Area type="monotone" dataKey="berat" stroke="#10b981" strokeWidth={3} fill="url(#gradBerat)" dot={{r: 3, fill: '#10b981', strokeWidth:0}} activeDot={{r: 6}} isAnimationActive={true} />
                       </AreaChart>
                   ) : (
                       <BarChart data={chartDataDisplay}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                          <XAxis dataKey="line" tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
-                          <YAxis domain={[0, 'auto']} tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
-                          <Tooltip contentStyle={{backgroundColor: '#fff', color: '#000', borderRadius:'8px', border:'none', boxShadow:'0 10px 15px -3px rgba(0, 0, 0, 0.1)'}} />
-                          <Bar dataKey="suhu" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                           <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                           <XAxis dataKey="line" tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
+                           <YAxis domain={[0, 'auto']} tick={{fontSize:12, fill:'#888'}} axisLine={false} tickLine={false} />
+                           <Tooltip contentStyle={{backgroundColor: 'var(--background, #fff)', color: 'var(--foreground, #000)', borderRadius:'8px', border:'none', boxShadow:'0 10px 15px -3px rgba(0, 0, 0, 0.1)'}} />
+                           <Bar dataKey="suhu" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                           <Bar dataKey="berat" fill="#10b981" radius={[4, 4, 0, 0]} />
                       </BarChart>
                   )}
