@@ -1,4 +1,105 @@
+import React from 'react';
 import { Icons } from '@/components/Icons';
+
+export const SettingsModal = ({ standards, setStandards, setShowSettings }) => {
+    const [tempStandards, setTempStandards] = React.useState({ ...standards });
+
+    const handleSave = () => {
+        setStandards(tempStandards);
+        setShowSettings(false);
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+            <div className="bg-white dark:bg-neutral-900 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800">
+                <div className="p-6 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center bg-neutral-50 dark:bg-neutral-800/50">
+                    <h3 className="text-lg font-bold flex items-center gap-2">
+                        <Icons.Settings /> Pengaturan Standard
+                    </h3>
+                    <button
+                        onClick={() => setShowSettings(false)}
+                        className="text-neutral-400 hover:text-red-500 transition-colors"
+                    >
+                        <Icons.Close />
+                    </button>
+                </div>
+                <div className="p-6 space-y-6">
+                    <div className="space-y-4">
+                        <label className="text-sm font-bold text-neutral-500 block">Suhu (°C)</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] text-neutral-400 uppercase">Min</label>
+                                <input
+                                    type="number"
+                                    className="w-full p-2 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg outline-none focus:border-blue-500"
+                                    value={tempStandards.minSuhu}
+                                    onChange={(e) =>
+                                        setTempStandards({ ...tempStandards, minSuhu: Number(e.target.value) })
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] text-neutral-400 uppercase">Max</label>
+                                <input
+                                    type="number"
+                                    className="w-full p-2 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg outline-none focus:border-blue-500"
+                                    value={tempStandards.maxSuhu}
+                                    onChange={(e) =>
+                                        setTempStandards({ ...tempStandards, maxSuhu: Number(e.target.value) })
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="text-sm font-bold text-neutral-500 block">Berat (kg)</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] text-neutral-400 uppercase">Min</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="w-full p-2 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg outline-none focus:border-blue-500"
+                                    value={tempStandards.minBerat}
+                                    onChange={(e) =>
+                                        setTempStandards({ ...tempStandards, minBerat: Number(e.target.value) })
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] text-neutral-400 uppercase">Max</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="w-full p-2 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-lg outline-none focus:border-blue-500"
+                                    value={tempStandards.maxBerat}
+                                    onChange={(e) =>
+                                        setTempStandards({ ...tempStandards, maxBerat: Number(e.target.value) })
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="p-4 bg-neutral-50 dark:bg-neutral-800/50 flex gap-3 border-t border-neutral-100 dark:border-neutral-800">
+                    <button
+                        onClick={() => setShowSettings(false)}
+                        className="flex-1 py-2.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 font-bold rounded-lg hover:bg-neutral-200 transition"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        onClick={handleSave}
+                        className="flex-1 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition"
+                    >
+                        Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export const GuideModal = ({ setShowGuide }) => (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">

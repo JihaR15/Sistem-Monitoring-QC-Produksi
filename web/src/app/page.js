@@ -11,13 +11,15 @@ import { StatSection } from '@/components/Dashboard/StatSection';
 import { ChartSection } from '@/components/Dashboard/ChartSection';
 import { TableSection } from '@/components/Dashboard/TableSection';
 import { FormSection } from '@/components/Dashboard/FormSection';
-import { GuideModal, ConfirmModal } from '@/components/Dashboard/Modals';
+import { GuideModal, ConfirmModal, SettingsModal } from '@/components/Dashboard/Modals';
 
 export default function Home() {
   const { master, chartData, loading, error, fetchData, postData } = useApi();
 
   const [showGuide, setShowGuide] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [standards, setStandards] = useState(STANDARDS);
   const [filters, setFilters] = useState({ startDate: '', endDate: '', line: '', shift: '', status: '' });
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,8 +39,8 @@ export default function Home() {
         const temp = parseInt(form.suhu);
         const weight = parseFloat(form.berat);
         
-        const isBadTemp = temp < STANDARDS.minSuhu || temp > STANDARDS.maxSuhu;
-        const isBadWeight = weight < STANDARDS.minBerat || weight > STANDARDS.maxBerat;
+        const isBadTemp = temp < standards.minSuhu || temp > standards.maxSuhu;
+        const isBadWeight = weight < standards.minBerat || weight > standards.maxBerat;
 
         if (isBadTemp || isBadWeight) {
             setForm(prev => ({ ...prev, kualitas: 'NOT OK' }));
@@ -46,7 +48,7 @@ export default function Home() {
             setForm(prev => ({ ...prev, kualitas: 'OK' }));
         }
     }
-  }, [form.suhu, form.berat]);
+  }, [form.suhu, form.berat, standards]);
 
   const getFilteredData = () => {
     return chartData.filter(item => {
@@ -158,12 +160,25 @@ export default function Home() {
                     currentPage={currentPage} 
                     totalPages={totalPages} 
                 />
-            <FormSection form={form} setForm={setForm} handlePreSubmit={handlePreSubmit} master={master} />
+            <FormSection 
+                form={form} 
+                setForm={setForm} 
+                handlePreSubmit={handlePreSubmit} 
+                master={master} 
+                onOpenSettings={() => setShowSettings(true)}
+            />
             </section>
         </main>
 
         {showGuide && <GuideModal setShowGuide={setShowGuide} />}
         {showConfirm && <ConfirmModal form={form} setShowConfirm={setShowConfirm} handleFinalSubmit={handleFinalSubmit} />}
+        {showSettings && (
+            <SettingsModal 
+                standards={standards} 
+                setStandards={setStandards} 
+                setShowSettings={setShowSettings} 
+            />
+        )}
 
     </div>
   );

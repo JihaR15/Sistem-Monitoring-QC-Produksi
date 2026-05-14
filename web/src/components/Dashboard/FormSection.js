@@ -1,11 +1,21 @@
 import { Icons } from '@/components/Icons';
 import { SelectSimple } from '@/components/UIComponents';
 
-export const FormSection = ({ form, setForm, handlePreSubmit, master }) => {
+export const FormSection = ({ form, setForm, handlePreSubmit, master, onOpenSettings }) => {
   return (
     <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-md flex flex-col justify-between transition-all hover:shadow-lg">
         <div>
-            <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-4">Input Manual</h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Input Manual</h3>
+                <button 
+                    type="button"
+                    onClick={onOpenSettings}
+                    className="p-1.5 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-400 hover:text-blue-500 transition-colors"
+                    title="Pengaturan Standard"
+                >
+                    <Icons.Settings />
+                </button>
+            </div>
             <form onSubmit={handlePreSubmit} className="space-y-4">
                 
                 <div className="p-3 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg space-y-3 border border-neutral-100 dark:border-neutral-800">
