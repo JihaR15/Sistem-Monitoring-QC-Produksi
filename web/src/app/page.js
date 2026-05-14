@@ -20,7 +20,7 @@ export default function Home() {
   const [filters, setFilters] = useState({ startDate: '', endDate: '', line: '', shift: '', status: '' });
   
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 7;
 
   const [chartType, setChartType] = useState('area'); 
   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'desc' });
@@ -144,7 +144,7 @@ export default function Home() {
         <header className="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800 px-6 py-4 sticky top-0 z-40 flex justify-between items-center shadow-sm">
             <div>
                 <h1 className="text-xl font-bold flex items-center gap-2">
-                    🏭 Production <span className="text-blue-600">Dashboard</span>
+                    <Icons.Factory />Production <span className="text-blue-600">Dashboard</span>
                 </h1>
                 <div className="text-xs text-neutral-500 dark:text-neutral-400">Sistem Monitoring Kualitas Real-time</div>
             </div>
@@ -156,7 +156,7 @@ export default function Home() {
             </div>
         </header>
 
-        <main className="p-6 max-w-7xl mx-auto space-y-6">
+        <main className="p-6 w-full mx-auto space-y-6">
             <FilterSection filters={filters} setFilters={setFilters} lines={master.lines} shifts={master.shifts} />
             <StatSection totalProduksi={totalProduksi} totalOK={totalOK} totalReject={totalReject} rejectRate={rejectRate} />
             <ChartSection pieData={pieData} chartDataDisplay={chartDataDisplay} chartType={chartType} setChartType={setChartType} />
@@ -171,7 +171,7 @@ export default function Home() {
                     currentPage={currentPage} 
                     totalPages={totalPages} 
                 />
-                <FormSection form={form} setForm={setForm} handlePreSubmit={handlePreSubmit} master={master} />
+            <FormSection form={form} setForm={setForm} handlePreSubmit={handlePreSubmit} master={master} />
             </section>
         </main>
 
